@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Counter(),)),));
+void main() => runApp(MyApp());
 
-class Counter extends StatefulWidget{
+class MyApp extends StatelessWidget{
   @override
-  State<StatefulWidget> createState() => _MyCounterWidget();
+  Widget build(BuildContext context) => MaterialApp(home: MyHomePage());
 }
 
-class _MyCounterWidget  extends State<Counter>{
-  int _counter = 0;
+class MyHomePage extends StatefulWidget{
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      TextButton(onPressed: _increment, child: Text('PRESS ME!')),
-      Text('You have pressed the button $_counter times')
-    ],
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage>{
+  String _inputText = '';
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('Creating Stateful Widgets'),),
+    body: Center(
+      child: TextField(
+        decoration: InputDecoration(hintText: "Enter some text here!"),
+        onChanged: (value) {
+          setState(() {
+            _inputText = value;
+          });
+        },
+      ),
+    ),
+    bottomSheet: Container(
+      alignment: Alignment.center,
+      height: 50,
+      child: Text('you entered $_inputText'),
+    ),
   );
-
-  void _increment() {
-    setState(() {
-      _counter++;
-    });
-  }
 }
-  
-
