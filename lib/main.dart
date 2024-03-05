@@ -1,72 +1,43 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MaterialApp(title: "App Bar",home: const MyApp(),));
 
 class MyApp extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: MyHomePage(),);
-  }
-}
+  const MyApp({super.key});
 
-class MyHomePage extends StatefulWidget{
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage>{
-  List<String> _todos = ['task 1', 'task 2', 'task 3'];
-  void _addTodo() {
-    showDialog(context: context,
-        builder: (BuildContext context) {
-            String newTodo = '';
-            return AlertDialog(
-              title: Text('Enter a new text below'),
-              content: TextField(
-                onChanged: (value) {
-                  newTodo = value;
-                },
-              ),
-              actions: <Widget>[
-                TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancel')),
-                TextButton(
-                    onPressed: (){
-                        setState(() {
-                          _todos.add(newTodo);
-                        });
-                        Navigator.of(context).pop();
-                        },
-                    child: Text('Sumit'))
-              ],
-            );
-        });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Todo List'),),
-      body: ListView.builder(
-        itemCount: _todos.length,
-        itemBuilder: (context, index) {
-          final todo = _todos[index];
-          return ListTile(
-            title: Text(
-                todo,
-                style: TextStyle(decoration: todo.startsWith('-') ? TextDecoration.lineThrough : TextDecoration.none),),
-            onTap: () {
-              setState(() {
-                if (todo.startsWith('-')) {
-                  _todos[index] = todo.substring(2);
-                } else {
-                  _todos[index] = '- $todo';
-                }
-              });
-            },);
-        }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addTodo,
-        child: Icon(Icons.add),
+      appBar: AppBar( title: const Text("SCREEN ONE")),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SecondScreen())
+                        );
+                      },
+            child: Text('GO TO SECOND SCREEN')),
       ),
-      );
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget{
+  const SecondScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(title: "App Bar", home: Scaffold(
+      appBar: AppBar(title: Text('SECOND SCREEN'),),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('GO TO FIRST SCREEN'),
+        ),
+      ),
+    ),);
   }
 }
