@@ -7,37 +7,35 @@ class MyApp extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    return MyHomePage();
+  }
+}
+
+class MyHomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( title: const Text("SCREEN ONE")),
-      body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SecondScreen())
-                        );
-                      },
-            child: Text('GO TO SECOND SCREEN')),
+      appBar: AppBar(title: Text('Home Screen'),),
+      body: const Center(child: Text('My Home page'),),
+      drawer: Drawer(
+        child: ListView(
+          children:  <Widget>[
+            const SizedBox(
+              height: 60,
+              child:  DrawerHeader(decoration: BoxDecoration(color: Colors.blue), child: Text("Drawer header"),),
+            ),
+            ListTile(
+              title:  const Text('Item One'),
+              onTap: () {
+                Navigator.of(context).pop();
+              }
+            ),
+            const ListTile(title: Text('Item Two'),)
+          ],
+        ),
       ),
     );
   }
+  
 }
 
-class SecondScreen extends StatelessWidget{
-  const SecondScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(title: "App Bar", home: Scaffold(
-      appBar: AppBar(title: Text('SECOND SCREEN'),),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('GO TO FIRST SCREEN'),
-        ),
-      ),
-    ),);
-  }
-}
