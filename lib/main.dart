@@ -50,10 +50,16 @@ class _MyHomePageState extends State<MyHomePage>{
         itemBuilder: (context, index) {
           final todo = _todos[index];
           return ListTile(
-            title: Text(todo),
+            title: Text(
+                todo,
+                style: TextStyle(decoration: todo.startsWith('-') ? TextDecoration.lineThrough : TextDecoration.none),),
             onTap: () {
               setState(() {
-                _todos.removeAt(index);
+                if (todo.startsWith('-')) {
+                  _todos[index] = todo.substring(2);
+                } else {
+                  _todos[index] = '- $todo';
+                }
               });
             },);
         }),
