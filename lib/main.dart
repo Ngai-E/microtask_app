@@ -1,72 +1,116 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
+class Todo {
+  final String title;
+  final String description;
+
+  const Todo(this.title, this.description);
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+final List<Todo> _todos = [
+  const Todo('Task one', 'take out the trash'),
+  const Todo('Task two', 'paint the house')
+];
 
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeScreen(),
-      );
-  }
-}
-
-class HomeScreen  extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  var _selectedOption = 'None';
-
-  void _selectOption() async {
-    var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const OptionsScreen()));
-
-    setState(() {
-      _selectedOption = result ?? 'NONE';
-    });
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Screen'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Selected Option: $_selectedOption'),
-            ElevatedButton(onPressed: _selectOption, child: const Text('Select Option')),
-          ],
-        ),
-      ),
+    return MaterialApp(
+      title: 'Todo App',
+      home: TasksScreen( todos: _todos,),
     );
   }
 }
 
-class OptionsScreen  extends StatelessWidget {
-  const OptionsScreen({super.key});
+class TasksScreen extends StatefulWidget{
+  final List<Todo> todos;
+
+  const TasksScreen({super.key, required this.todos});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _TasksScreenState();
+  }
+}
+
+class _TasksScreenState  extends State<TasksScreen>{
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Options Screen'),
+      appBar: AppBar(title: Text('My tasks'),),
+      body: ListView.builder(
+        itemCount: _todos.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_todos[index].title),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsScreen(todo: _todos[index])));
+            },
+          );
+        },
       ),
-      body: Center(
-        child: Column(
+      floatingActionButton:  FloatingActionButton(
+        onPressed: _createNewTask,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  _createNewTask()  async {
+    Todo? result =  await showDialog(context: context, builder: (context) {
+      String? title;
+      String? description;
+      return AlertDialog(
+        title: Text('Create New Task'),
+        content: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(onPressed: () => Navigator.pop(context, 'option 1'), child: const Text('Option 1')),
-            ElevatedButton(onPressed: () => Navigator.pop(context, 'option 2'), child: const Text('Option 2')),
+          children: <Widget> [
+            TextField(
+              decoration: InputDecoration(hintText: 'Enter title'),
+              onChanged: (value) => title = value,
+            ),
+            TextField(
+              decoration: InputDecoration(hintText: 'Enter description'),
+              onChanged: (value) => description = value,
+            ),
           ],
+        ),
+        actions: <Widget>[
+          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+          TextButton(onPressed: () {
+            if (title != null && description != null) {
+              Navigator.pop(context, Todo(title!, description!));
+            }
+          }, child: Text('Save'))
+        ],
+      );
+    });
+
+    if (result != null) {
+      setState(() {
+        _todos.add(result);
+      });
+    }
+
+  }
+}
+
+class DetailsScreen extends StatelessWidget{
+  final Todo todo;
+
+  const DetailsScreen({super.key, required this.todo});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Details Screen',
+      home: Scaffold(
+        appBar: AppBar(title: Text(this.todo.title),),
+        body: Center(
+          child: Text(this.todo.description),
         ),
       ),
     );
