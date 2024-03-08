@@ -65,8 +65,10 @@ class _TasksScreenState  extends State<TasksScreen>{
       String? description;
       return AlertDialog(
         title: Text('Create New Task'),
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        content: SizedBox(
+          height: 100,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget> [
             TextField(
               decoration: InputDecoration(hintText: 'Enter title'),
@@ -77,7 +79,7 @@ class _TasksScreenState  extends State<TasksScreen>{
               onChanged: (value) => description = value,
             ),
           ],
-        ),
+        ),),
         actions: <Widget>[
           TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
           TextButton(onPressed: () {
