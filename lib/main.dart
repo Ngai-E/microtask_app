@@ -16,20 +16,29 @@ class FlutterDemo extends StatefulWidget{
 }
 
 class _FlutterDemoState  extends State<FlutterDemo>{
-  int _counter = 0;
+  final userInputController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Flutter Demo'),),
       body: Center(
-        child: Text('Button tapped $_counter time${_counter == 1 ? '' : 's'}.'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: TextField(
+            controller: userInputController,
+            decoration: InputDecoration(hintText: 'Enter some text'),
+          ),
+        ),
 
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _writeUserInputText();
+        },
+        tooltip: 'Save',
+        child: Icon(Icons.save),
+      )
     );
   }
 
@@ -38,16 +47,13 @@ class _FlutterDemoState  extends State<FlutterDemo>{
     super.initState();
     widget.storage.readCounter().then((value) => {
       setState(() {
-        _counter = value;
+        userInputController.text = value;
       })
     });
   }
 
-  Future<File> _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-    return widget.storage.writeCounter(_counter);
+  Future<File> _writeUserInputText() {
+    return widget.storage.writeCounter(userInputController.text);
   }
 }
 
@@ -63,18 +69,18 @@ class CounterStorage {
     return File('$path/counter.txt');
   }
 
-  Future<int> readCounter() async {
+  Future<String> readCounter() async {
     try {
       final file = await _localFile;
       final contents = await file.readAsString();
-      return int.parse(contents);
+      return contents;
     } catch (err) {
-      return 0; //this is the first time app is opened
+      return ''; //this is the first time app is opened
     }
   }
 
-  Future<File> writeCounter(int counter) async {
+  Future<File> writeCounter(String userInput) async {
     final file = await _localFile;
-    return file.writeAsString('$counter');
+    return file.writeAsString(userInput);
   }
 }
